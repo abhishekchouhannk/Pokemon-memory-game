@@ -168,6 +168,8 @@ const setup = async (difficulty) => {
   $(".card").on("click", function () {
     if (!isClickable || $('#game_grid').attr('data-disabled') === 'true') return; // Prevent clicking during animations
 
+    if (firstCard && $(this).find(".front_face")[0].id == firstCard.id) return; // Prevent clicking the same card
+
     clicks++;
     $('#clicks').text(`Clicks: ${clicks}`);
     console.log("clicks: " + clicks);
