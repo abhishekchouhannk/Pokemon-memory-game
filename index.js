@@ -2,7 +2,6 @@ async function setupGrid(numberOfCards) {
   return new Promise((resolve, reject) => {
     constructCardData(numberOfCards)
       .then((cardData) => {
-        console.log(cardData);
         var gameGrid = $("#game_grid");
 
         for (var i = 0; i < cardData.length; i++) {
@@ -21,7 +20,6 @@ async function setupGrid(numberOfCards) {
           card.append(backFace);
           gameGrid.append(card);
         }
-        console.log("actual finished");
 
         // Resolve the promise to indicate setupGrid is complete
         resolve();
@@ -81,10 +79,10 @@ const constructCardData = async (numberOfCards) => {
   return cardData;
 };
 
-
 const setup = async () => {
   await setupGrid(16);
 
+  var clicks = 0;
   let firstCard = undefined;
   let secondCard = undefined;
   let failedAttempts = 0;
@@ -94,6 +92,10 @@ const setup = async () => {
 
   $(".card").on("click", function () {
     if (!isClickable) return; // Prevent clicking during animations
+
+    clicks++;
+    $('#clicks').text(`Clicks: ${clicks}`);
+    console.log("clicks: " + clicks);
   
     $(this).toggleClass("flip");
   
@@ -105,19 +107,19 @@ const setup = async () => {
       // console.log(firstCard, secondCard);
   
       if (firstCard.src === secondCard.src && firstCard.id != secondCard.id) {
-        console.log("match");
+        // console.log("match");
         $(`#${firstCard.id}`).parent().off("click");
         $(`#${secondCard.id}`).parent().off("click");
   
         flippedCards.push(firstCard.id, secondCard.id);
-        console.log(flippedCards)
+        // console.log(flippedCards)
   
         firstCard = undefined;
         secondCard = undefined;
         isClickable = true; // Re-enable clicking
         failedAttempts = 0;
       } else {
-        console.log("no match");
+        // console.log("no match");
         setTimeout(() => {
           if (!flippedCards.includes(firstCard.id)) {
             $(`#${firstCard.id}`).parent().toggleClass("flip");
@@ -157,6 +159,8 @@ const setup = async () => {
       }
     }
   });
+
+
 };
 
 $(document).ready(setup);
