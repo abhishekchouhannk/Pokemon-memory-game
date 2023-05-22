@@ -192,8 +192,12 @@ const setup = async (difficulty) => {
         if((flippedCards.length / 2) == totalPairs) {
           // const time = $('#timer').text();
           setTimeout(function() {
-            alert(`Hurray! You won in ${clicks} clicks and time`);
-          }, 2000); // Delay of 2000 milliseconds (2 seconds)        
+            $('#winClicks').text(clicks);
+            const timerValue = $('#timer').text();
+            const number = parseInt(timerValue.replace('Timer: ', ''));
+            $('#winTime').text(number);
+            $('#winModal').modal('show');
+          }, 2000); // Delay of 2000 milliseconds (2 seconds)    
         }
         // console.log(flippedCards)
   
