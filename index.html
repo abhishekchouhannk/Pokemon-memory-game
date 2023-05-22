@@ -66,6 +66,7 @@
         // Reset all HUD components and divs
         $('#game_grid').css('background-color', 'rgb(255, 255, 255)');
         $('#game_grid').empty();
+        console.log('empty didnt work')
         $('#game_grid').attr('data-disabled', 'true');
         $('#clicks').text(`Clicks: 0`);
         difficultyChosen = 0;
@@ -108,7 +109,18 @@
         }, 1000);
       });
 
-      $('#reset').click(reset());
+      $('#reset').click(function () {
+        clearInterval(timerInterval); // Stop the timer interval
+        $('#timer').text('Timer: 0'); // Reset the timer value to 0
+        // Reset all HUD components and divs
+        $('#game_grid').css('background-color', 'rgb(255, 255, 255)');
+        $('#game_grid').empty();
+        console.log('empty didnt work')
+        $('#game_grid').attr('data-disabled', 'true');
+        $('#clicks').text(`Clicks: 0`);
+        difficultyChosen = 0;
+        // setup();
+      });
     });
   </script>
 
