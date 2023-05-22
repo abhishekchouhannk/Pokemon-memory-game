@@ -151,11 +151,24 @@ const setup = async (difficulty) => {
   let secondCard = undefined;
   let failedAttempts = 0;
   let isClickable = true; // Flag to prevent clicking during animations
+  let totalPairs = 0;
+  if (difficulty == 16) {
+    totalPairs = 8;
+  } else if (difficulty == 30) {
+    totalPairs = 15;
+  } else if (difficulty == 54) {
+    totalPairs = 27;
+  }
+  $('#totalPairs').text(`Total Pairs: ${totalPairs}`);
+  $('#pairsLeft').text(`Pairs Left: ${totalPairs}`);
+   
 
   let flippedCards = [];
 
   $(".card").on("click", function () {
     if (!isClickable || $('#game_grid').attr('data-disabled') === 'true') return; // Prevent clicking during animations
+
+    if (firstCard && $(this).find(".front_face")[0].id == firstCard.id) return; // Prevent clicking the same card
 
     clicks++;
     $('#clicks').text(`Clicks: ${clicks}`);
@@ -176,6 +189,18 @@ const setup = async (difficulty) => {
         $(`#${secondCard.id}`).parent().off("click");
   
         flippedCards.push(firstCard.id, secondCard.id);
+        $('#pairsLeft').text(`Pairs Left: ${totalPairs - (flippedCards.length / 2)}`);
+        $('#pairsMatched').text(`Pairs Matched: ${flippedCards.length / 2}`);
+        if((flippedCards.length / 2) == totalPairs) {
+          // const time = $('#timer').text();
+          setTimeout(function() {
+            $('#winClicks').text(clicks);
+            const timerValue = $('#timer').text();
+            const number = parseInt(timerValue.replace('Timer: ', ''));
+            $('#winTime').text(number);
+            $('#winModal').modal('show');
+          }, 2000); // Delay of 2000 milliseconds (2 seconds)    
+        }
         // console.log(flippedCards)
   
         firstCard = undefined;

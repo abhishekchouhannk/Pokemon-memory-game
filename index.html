@@ -28,9 +28,10 @@
 
 <body>
   <nav class="navbar navbar-light bg-danger">
-    <span class="navbar-brand mb-0 h1" id="difficulty">Difficulty: Hard</span>
-    <span class="navbar-brand mb-0 h1" id="totalPairs">Total Pairs: 20</span>
-    <span class="navbar-brand mb-0 h1" id="score">Score: 400</span>
+    <span class="navbar-brand mb-0 h1" id="difficulty">Difficulty: Choose</span>
+    <span class="navbar-brand mb-0 h1" id="totalPairs">Total Pairs: 0</span>
+    <span class="navbar-brand mb-0 h1" id="pairsLeft">Pairs Left: 0</span>
+    <span class="navbar-brand mb-0 h1" id="pairsMatched">Pairs Matched: 0</span>
     <span class="navbar-brand mb-0 h1" id="clicks">Clicks: 0</span>
     <span class="navbar-brand mb-0 h1" id="timer">Timer: 0</span>
   </nav>
@@ -46,6 +47,18 @@
     <button type="button" class="btn btn-info mx-2" id="medium">Medium</button>
     <button type="button" class="btn btn-danger mx-2" id="hard">Hard</button>
   </div>
+  <div class="modal" id="winModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">You Win!</h5>
+        </div>
+        <div class="modal-body">
+          <p>Hurray! You won in <span id="winClicks"></span> clicks and <span id="winTime"></span> seconds.</p>
+        </div>
+      </div>
+    </div>
+  </div>  
   <script>
     $(document).ready(function() {
       $('#lightMode').click(function() {
@@ -66,9 +79,12 @@
         // Reset all HUD components and divs
         $('#game_grid').css('background-color', 'rgb(255, 255, 255)');
         $('#game_grid').empty();
-        console.log('empty didnt work')
         $('#game_grid').attr('data-disabled', 'true');
         $('#clicks').text(`Clicks: 0`);
+        $('#difficulty').text(`Difficulty: Choose`);
+        $('#totalPairs').text(`Total Pairs: 0`);
+        $('#pairsLeft').text(`Pairs Left: 0`);
+        $('#pairsMatched').text(`Pairs Matched: 0`);
         difficultyChosen = 0;
         // setup();
       }
@@ -79,27 +95,36 @@
       $('#easy').click(function() {
         reset()
         difficultyChosen = 1;
+        $('#difficulty').text(`Difficulty: Easy`);
         setup(difficulty.easy);
       });
 
       $('#medium').click(function() {
         reset()
         difficultyChosen = 1;
+        $('#difficulty').text(`Difficulty: Medium`);
         setup(difficulty.medium);
       });
 
       $('#hard').click(function() {
         reset()
         difficultyChosen = 1;
+        $('#difficulty').text(`Difficulty: Hard`);
         setup(difficulty.hard);
       });
 
       let timerInterval; // Variable to store the interval reference
 
       $('#start').click(function() {
-        if (!difficultyChosen) return;
+        // don't let game start if difficulty has not been chosen
+        if (!difficultyChosen)  return;
+        // don't let user click start button, once game has already been started
+        if (!($('#game_grid').attr('data-disabled') === 'true')) return;
+
+        // remove data disable command and let user click buttons
         $('#game_grid').removeAttr('data-disabled');
-        console.log('diff barrier crossed')
+
+        // setup timer
         let timerValue = 0;
         const timerElement = $('#timer');
 
@@ -113,9 +138,13 @@
         clearInterval(timerInterval); // Stop the timer interval
         $('#timer').text('Timer: 0'); // Reset the timer value to 0
         // Reset all HUD components and divs
+        $('#clicks').text(`Clicks: 0`);
+        $('#difficulty').text(`Difficulty: Choose`);
+        $('#totalPairs').text(`Total Pairs: 0`);
+        $('#pairsLeft').text(`Pairs Left: 0`);
+        $('#pairsMatched').text(`Pairs Matched: 0`);
         $('#game_grid').css('background-color', 'rgb(255, 255, 255)');
         $('#game_grid').empty();
-        console.log('empty didnt work')
         $('#game_grid').attr('data-disabled', 'true');
         $('#clicks').text(`Clicks: 0`);
         difficultyChosen = 0;
