@@ -131,7 +131,7 @@ const setup = async () => {
           isClickable = true; // Re-enable clicking
   
           failedAttempts++;
-          if (failedAttempts >= 5) {
+          if (failedAttempts >= 4) {
             isClickable = false;
             // Flip all non-matched cards for a peek
             setTimeout(() => {
