@@ -115,13 +115,14 @@ const setup = async () => {
         firstCard = undefined;
         secondCard = undefined;
         isClickable = true; // Re-enable clicking
+        failedAttempts = 0;
       } else {
         console.log("no match");
         setTimeout(() => {
-          if (!flippedCards.includes(firstCard)) {
+          if (!flippedCards.includes(firstCard.id)) {
             $(`#${firstCard.id}`).parent().toggleClass("flip");
           }
-          if (!flippedCards.includes(secondCard)) {
+          if (!flippedCards.includes(secondCard.id)) {
             $(`#${secondCard.id}`).parent().toggleClass("flip");
           }
   
@@ -136,12 +137,17 @@ const setup = async () => {
             setTimeout(() => {
               $(".card").each(function () {
                 const frontFace = $(this).find(".front_face")[0];
-                if (!flippedCards.includes(frontFace)) {
+                if (!flippedCards.includes(frontFace.id)) {
                   $(this).addClass("flip");
                 }
               });
               setTimeout(() => {
-                $(".card").not(flippedCards).removeClass("flip");
+                $(".card").each(function () {
+                  const frontFace = $(this).find(".front_face")[0];
+                  if (!flippedCards.includes(frontFace.id)) {
+                    $(this).removeClass("flip");
+                  }
+                });
                 isClickable = true;
               }, 2000); // Set the duration of the peek to 2 seconds
             }, 1000);
