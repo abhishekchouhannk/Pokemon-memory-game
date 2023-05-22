@@ -1,6 +1,6 @@
-async function setupGrid() {
+async function setupGrid(numberOfCards) {
   return new Promise((resolve, reject) => {
-    constructCardData(6)
+    constructCardData(numberOfCards)
       .then((cardData) => {
         console.log(cardData);
         var gameGrid = $("#game_grid");
@@ -72,30 +72,87 @@ const constructCardData = async (numberOfCards) => {
     cardData.push({ id, frontFace }, { id: `img${i + 2}`, frontFace });
   }
 
+  // Randomize the cardData array using Fisher-Yates shuffle algorithm
+  for (let i = cardData.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cardData[i], cardData[j]] = [cardData[j], cardData[i]];
+  }
+
   return cardData;
 };
 
+
 const setup = async () => {
-  await setupGrid();
+  await setupGrid(40);
 
   let firstCard = undefined;
   let secondCard = undefined;
-  $(".card").on("click", function () {
-    $(this).toggleClass("flip");
+  let failedAttempts = 0;
+  let isClickable = true; // Flag to prevent clicking during animations
 
-    if (!firstCard) firstCard = $(this).find(".front_face")[0];
-    else {
+  let flippedCards = [];
+
+  $(".card").on("click", function () {
+    if (!isClickable) return; // Prevent clicking during animations
+  
+    $(this).toggleClass("flip");
+  
+    if (!firstCard) {
+      firstCard = $(this).find(".front_face")[0];
+    } else if (!secondCard) {
+      isClickable = false; // Disable clicking during comparison
       secondCard = $(this).find(".front_face")[0];
-      console.log(firstCard, secondCard);
-      if (firstCard.src == secondCard.src) {
+      // console.log(firstCard, secondCard);
+  
+      if (firstCard.src === secondCard.src && firstCard.id != secondCard.id) {
         console.log("match");
         $(`#${firstCard.id}`).parent().off("click");
         $(`#${secondCard.id}`).parent().off("click");
+  
+        flippedCards.push(firstCard.id, secondCard.id);
+        console.log(flippedCards)
+  
+        firstCard = undefined;
+        secondCard = undefined;
+        isClickable = true; // Re-enable clicking
+        failedAttempts = 0;
       } else {
         console.log("no match");
         setTimeout(() => {
-          $(`#${firstCard.id}`).parent().toggleClass("flip");
-          $(`#${secondCard.id}`).parent().toggleClass("flip");
+          if (!flippedCards.includes(firstCard.id)) {
+            $(`#${firstCard.id}`).parent().toggleClass("flip");
+          }
+          if (!flippedCards.includes(secondCard.id)) {
+            $(`#${secondCard.id}`).parent().toggleClass("flip");
+          }
+  
+          firstCard = undefined;
+          secondCard = undefined;
+          isClickable = true; // Re-enable clicking
+  
+          failedAttempts++;
+          if (failedAttempts >= 5) {
+            isClickable = false;
+            // Flip all non-matched cards for a peek
+            setTimeout(() => {
+              $(".card").each(function () {
+                const frontFace = $(this).find(".front_face")[0];
+                if (!flippedCards.includes(frontFace.id)) {
+                  $(this).addClass("flip");
+                }
+              });
+              setTimeout(() => {
+                $(".card").each(function () {
+                  const frontFace = $(this).find(".front_face")[0];
+                  if (!flippedCards.includes(frontFace.id)) {
+                    $(this).removeClass("flip");
+                  }
+                });
+                isClickable = true;
+              }, 2000); // Set the duration of the peek to 2 seconds
+            }, 1000);
+            failedAttempts = 0; // Reset failed attempts count
+          }
         }, 1000);
       }
     }
