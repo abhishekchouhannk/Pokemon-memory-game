@@ -1,32 +1,35 @@
-function setupGrid() {
-// Example usage: Fetching information for 6 Pokémon
-fetchPokemonInfo(18)
-.then((pokemonArray) => {
-  console.log(pokemonArray);
-})
-.catch((error) => {
-  console.log(error);
-});
-  var cardData = [
-    { id: 'img1', frontFace: '001.png' },
-    { id: 'img2', frontFace: '002.png' },
-    { id: 'img3', frontFace: '003.png' },
-    { id: 'img4', frontFace: '001.png' },
-    { id: 'img5', frontFace: '002.png' },
-    { id: 'img6', frontFace: '003.png' }
-  ];
+async function setupGrid() {
+  return new Promise((resolve, reject) => {
+    constructCardData(6)
+      .then((cardData) => {
+        console.log(cardData);
+        var gameGrid = $("#game_grid");
 
-  // var gameGrid = $('#game_grid');
+        for (var i = 0; i < cardData.length; i++) {
+          var card = $("<div>").addClass("card");
+          var frontFace = $("<img>")
+            .attr("id", cardData[i].id)
+            .addClass("front_face")
+            .attr("src", cardData[i].frontFace)
+            .attr("alt", "");
+          var backFace = $("<img>")
+            .addClass("back_face")
+            .attr("src", "back.webp")
+            .attr("alt", "");
 
-  // for (var i = 0; i < cardData.length; i++) {
-  //   var card = $('<div>').addClass('card');
-  //   var frontFace = $('<img>').attr('id', cardData[i].id).addClass('front_face').attr('src', cardData[i].frontFace).attr('alt', '');
-  //   var backFace = $('<img>').addClass('back_face').attr('src', 'back.webp').attr('alt', '');
+          card.append(frontFace);
+          card.append(backFace);
+          gameGrid.append(card);
+        }
+        console.log("actual finished");
 
-  //   card.append(frontFace);
-  //   card.append(backFace);
-  //   gameGrid.append(card);
-  // }
+        // Resolve the promise to indicate setupGrid is complete
+        resolve();
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 }
 
 const fetchPokemonInfo = async (numberOfPokemon) => {
@@ -39,7 +42,9 @@ const fetchPokemonInfo = async (numberOfPokemon) => {
   const fetchPromises = Array.from({ length: numberOfPokemon }, () =>
     fetch(`https://pokeapi.co/api/v2/pokemon/${getRandomNumber()}`)
       .then((response) => response.json())
-      .then((data) => pokemonArray.push(data.sprites.other["official-artwork"].front_default))
+      .then((data) =>
+        pokemonArray.push(data.sprites.other["official-artwork"].front_default)
+      )
   );
 
   // Wait for all promises to resolve
@@ -48,40 +53,53 @@ const fetchPokemonInfo = async (numberOfPokemon) => {
   const endTime = new Date();
   const totalTime = endTime - startTime;
 
-  console.log(`Fetched ${numberOfPokemon} Pokémon in ${totalTime} milliseconds.`);
+  console.log(
+    `Fetched ${numberOfPokemon} Pokémon in ${totalTime} milliseconds.`
+  );
 
   return pokemonArray;
 };
 
-const setup = () => {
-  setupGrid();
-  let firstCard = undefined
-  let secondCard = undefined
-  $(".card").on(("click"), function () {
+// Function to construct an array of card data with Pokémon URLs
+const constructCardData = async (numberOfCards) => {
+  const pokemonUrls = await fetchPokemonInfo(numberOfCards / 2);
+
+  const cardData = [];
+  for (let i = 0; i < numberOfCards; i += 2) {
+    const id = `img${i + 1}`;
+    const frontFace = pokemonUrls[i / 2];
+
+    cardData.push({ id, frontFace }, { id: `img${i + 2}`, frontFace });
+  }
+
+  return cardData;
+};
+
+const setup = async () => {
+  await setupGrid();
+
+  let firstCard = undefined;
+  let secondCard = undefined;
+  $(".card").on("click", function () {
     $(this).toggleClass("flip");
 
-    if (!firstCard)
-      firstCard = $(this).find(".front_face")[0]
+    if (!firstCard) firstCard = $(this).find(".front_face")[0];
     else {
-      secondCard = $(this).find(".front_face")[0]
+      secondCard = $(this).find(".front_face")[0];
       console.log(firstCard, secondCard);
-      if (
-        firstCard.src
-        ==
-        secondCard.src
-      ) {
-        console.log("match")
-        $(`#${firstCard.id}`).parent().off("click")
-        $(`#${secondCard.id}`).parent().off("click")
+      if (firstCard.src == secondCard.src) {
+        console.log("match");
+        $(`#${firstCard.id}`).parent().off("click");
+        $(`#${secondCard.id}`).parent().off("click");
       } else {
-        console.log("no match")
+        console.log("no match");
         setTimeout(() => {
-          $(`#${firstCard.id}`).parent().toggleClass("flip")
-          $(`#${secondCard.id}`).parent().toggleClass("flip")
-        }, 1000)
+          $(`#${firstCard.id}`).parent().toggleClass("flip");
+          $(`#${secondCard.id}`).parent().toggleClass("flip");
+        }, 1000);
       }
     }
   });
-}
+};
 
-$(document).ready(setup)
+$(document).ready(setup);
