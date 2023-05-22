@@ -79,9 +79,7 @@ const constructCardData = async (numberOfCards) => {
   return cardData;
 };
 
-var difficultyChosen = 0;
-
-const setup = async (difficulty) => {
+async function setDifficulty(difficulty) {
   /*
   difficulty chart:
   easy : 16 cards (4 * 4)
@@ -105,7 +103,48 @@ const setup = async (difficulty) => {
     $('img').css({
       height: '150px'
     });
+  } else if (difficulty == 30) {
+    await setupGrid(difficulty);
+    // Update grid styles
+    $('#game_grid').css({
+      width: '720px',
+      height: '600px'
+    });
+
+    // Update card styles
+    $('.card').css({
+    width: '16.66%',
+    height: '120px'
+    });
+      // Update img styles
+    $('img').css({
+      height: '120px'
+    });
+  } else if (difficulty == 54) {
+    await setupGrid(difficulty);
+    // Update grid styles
+    $('#game_grid').css({
+      width: '900px',
+      height: '600px'
+    });
+
+    // Update card styles
+    $('.card').css({
+    width: '11.11%',
+    height: '100px'
+    });
+      // Update img styles
+    $('img').css({
+      height: '100px'
+    });
   }
+}
+
+var difficultyChosen = 0;
+
+const setup = async (difficulty) => {
+
+  await setDifficulty(difficulty);
 
   var clicks = 0;
   let firstCard = undefined;

@@ -60,36 +60,7 @@
         $('img').css('background-color', 'rgb(93, 82, 82)');
       });
 
-      //  difficulty = easy, medium, hard
-      var difficulty = {easy: 16, medium: 30, hard: 54};
-
-      $('#easy').click(function() {
-        $('#game_grid').empty();
-        difficultyChosen = 1;
-        setup(difficulty.easy);
-      });
-
-      $('#medium').click(function() {
-        $('#game_grid').empty();
-        difficultyChosen = 1;
-        setup(difficulty.medium);
-      });
-
-      let timerInterval; // Variable to store the interval reference
-
-      $('#start').click(function() {
-        if (!difficultyChosen) return;
-        $('#game_grid').removeAttr('data-disabled');
-        let timerValue = 0;
-        const timerElement = $('#timer');
-
-        timerInterval = setInterval(function() {
-          timerValue++;
-          timerElement.text('Timer: ' + timerValue);
-        }, 1000);
-      });
-
-      $('#reset').click(function() {
+      function reset() {
         clearInterval(timerInterval); // Stop the timer interval
         $('#timer').text('Timer: 0'); // Reset the timer value to 0
         // Reset all HUD components and divs
@@ -99,7 +70,45 @@
         $('#clicks').text(`Clicks: 0`);
         difficultyChosen = 0;
         // setup();
+      }
+
+      //  difficulty = easy, medium, hard
+      var difficulty = {easy: 16, medium: 30, hard: 54};
+
+      $('#easy').click(function() {
+        reset()
+        difficultyChosen = 1;
+        setup(difficulty.easy);
       });
+
+      $('#medium').click(function() {
+        reset()
+        difficultyChosen = 1;
+        setup(difficulty.medium);
+      });
+
+      $('#hard').click(function() {
+        reset()
+        difficultyChosen = 1;
+        setup(difficulty.hard);
+      });
+
+      let timerInterval; // Variable to store the interval reference
+
+      $('#start').click(function() {
+        if (!difficultyChosen) return;
+        $('#game_grid').removeAttr('data-disabled');
+        console.log('diff barrier crossed')
+        let timerValue = 0;
+        const timerElement = $('#timer');
+
+        timerInterval = setInterval(function() {
+          timerValue++;
+          timerElement.text('Timer: ' + timerValue);
+        }, 1000);
+      });
+
+      $('#reset').click(reset());
     });
   </script>
 
