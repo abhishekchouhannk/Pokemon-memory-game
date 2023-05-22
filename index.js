@@ -1,6 +1,6 @@
-async function setupGrid() {
+async function setupGrid(numberOfCards) {
   return new Promise((resolve, reject) => {
-    constructCardData(6)
+    constructCardData(numberOfCards)
       .then((cardData) => {
         console.log(cardData);
         var gameGrid = $("#game_grid");
@@ -76,30 +76,47 @@ const constructCardData = async (numberOfCards) => {
 };
 
 const setup = async () => {
-  await setupGrid();
+  await setupGrid(40);
 
   let firstCard = undefined;
   let secondCard = undefined;
+  let isClickable = true; // Flag to prevent clicking during animations
+
   $(".card").on("click", function () {
+    if (!isClickable) return; // Prevent clicking during animations
+
     $(this).toggleClass("flip");
 
-    if (!firstCard) firstCard = $(this).find(".front_face")[0];
-    else {
+    if (!firstCard) {
+      firstCard = $(this).find(".front_face")[0];
+    } else if (!secondCard) {
+      isClickable = false; // Disable clicking during comparison
       secondCard = $(this).find(".front_face")[0];
       console.log(firstCard, secondCard);
-      if (firstCard.src == secondCard.src) {
+
+      if (firstCard.src === secondCard.src && firstCard.id != secondCard.id) {
         console.log("match");
         $(`#${firstCard.id}`).parent().off("click");
         $(`#${secondCard.id}`).parent().off("click");
+
+        firstCard = undefined;
+        secondCard = undefined;
+        isClickable = true; // Re-enable clicking
       } else {
         console.log("no match");
         setTimeout(() => {
           $(`#${firstCard.id}`).parent().toggleClass("flip");
           $(`#${secondCard.id}`).parent().toggleClass("flip");
+
+          firstCard = undefined;
+          secondCard = undefined;
+          isClickable = true; // Re-enable clicking
         }, 1000);
       }
     }
   });
 };
+
+
 
 $(document).ready(setup);
