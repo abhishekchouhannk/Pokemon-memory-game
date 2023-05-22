@@ -32,14 +32,16 @@
     <span class="navbar-brand mb-0 h1" id="totalPairs">Total Pairs: 20</span>
     <span class="navbar-brand mb-0 h1" id="score">Score: 400</span>
     <span class="navbar-brand mb-0 h1" id="clicks">Clicks: 0</span>
+    <span class="navbar-brand mb-0 h1" id="timer">Timer: 0</span>
   </nav>
-  <div id="game_grid"></div>
+  <div id="game_grid" data-disabled="true"></div>
   <div class="container d-flex justify-content-center mt-3">
     <button type="button" class="btn btn-success mx-2" id="easy">Easy</button>
     <button type="button" class="btn btn-info mx-2" id="medium">Medium</button>
     <button type="button" class="btn btn-danger mx-2" id="hard">Hard</button>
   </div>
   <div class="container d-flex justify-content-center mt-3">
+    <button type="button" class="btn btn-primary mx-2" id="start">Start</button>
     <button type="button" class="btn btn-light mx-2" id="lightMode">Light Mode</button>
     <button type="button" class="btn btn-dark mx-2" id="darkMode">Dark Mode</button>
     <button type="button" class="btn btn-primary mx-2" id="reset">Reset</button>
@@ -58,9 +60,23 @@
         $('img').css('background-color', 'rgb(93, 82, 82)');
       });
   
+
+      let timerInterval; // Variable to store the interval reference
+
+      $('#start').click(function() {
+        $('#game_grid').removeAttr('data-disabled');
+        let timerValue = 0;
+        const timerElement = $('#timer');
+
+        timerInterval = setInterval(function() {
+          timerValue++;
+          timerElement.text('Timer: ' + timerValue);
+        }, 1000);
+      });
+
       $('#reset').click(function() {
-        $('#game_grid').css('background-color', 'rgb(255, 255, 255)');
-        $('#game_grid').empty();
+        clearInterval(timerInterval); // Stop the timer interval
+        $('#timer').text('Timer: 0'); // Reset the timer value to 0
         setup();
       });
     });

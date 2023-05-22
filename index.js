@@ -80,6 +80,11 @@ const constructCardData = async (numberOfCards) => {
 };
 
 const setup = async () => {
+  // Reset all HUD components and divs
+  $('#game_grid').css('background-color', 'rgb(255, 255, 255)');
+  $('#game_grid').empty();
+  $('#game_grid').attr('data-disabled', 'true');
+  $('#clicks').text(`Clicks: 0`);
   await setupGrid(16);
 
   var clicks = 0;
@@ -91,7 +96,7 @@ const setup = async () => {
   let flippedCards = [];
 
   $(".card").on("click", function () {
-    if (!isClickable) return; // Prevent clicking during animations
+    if (!isClickable || $('#game_grid').attr('data-disabled') === 'true') return; // Prevent clicking during animations
 
     clicks++;
     $('#clicks').text(`Clicks: ${clicks}`);
