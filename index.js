@@ -83,6 +83,7 @@ const setup = async () => {
   let isClickable = true; // Flag to prevent clicking during animations
 
   $(".card").on("click", function () {
+    // $('.card').toggleClass("flip");
     if (!isClickable) return; // Prevent clicking during animations
 
     $(this).toggleClass("flip");
