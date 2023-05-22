@@ -160,6 +160,7 @@ const setup = async (difficulty) => {
     totalPairs = 27;
   }
   $('#totalPairs').text(`Total Pairs: ${totalPairs}`);
+  $('#pairsLeft').text(`Pairs Left: ${totalPairs}`);
    
 
   let flippedCards = [];
@@ -186,6 +187,11 @@ const setup = async (difficulty) => {
         $(`#${secondCard.id}`).parent().off("click");
   
         flippedCards.push(firstCard.id, secondCard.id);
+        $('#pairsLeft').text(`Pairs Left: ${totalPairs - (flippedCards.length / 2)}`);
+        $('#pairsMatched').text(`Pairs Matched: ${flippedCards.length / 2}`);
+        if((flippedCards.length / 2) == totalPairs) {
+          
+        }
         // console.log(flippedCards)
   
         firstCard = undefined;
