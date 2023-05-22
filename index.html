@@ -97,9 +97,15 @@
       let timerInterval; // Variable to store the interval reference
 
       $('#start').click(function() {
-        if (!difficultyChosen) return;
+        // don't let game start if difficulty has not been chosen
+        if (!difficultyChosen)  return;
+        // don't let user click start button, once game has already been started
+        if (!($('#game_grid').attr('data-disabled') === 'true')) return;
+
+        // remove data disable command and let user click buttons
         $('#game_grid').removeAttr('data-disabled');
-        console.log('diff barrier crossed')
+
+        // setup timer
         let timerValue = 0;
         const timerElement = $('#timer');
 
@@ -115,7 +121,6 @@
         // Reset all HUD components and divs
         $('#game_grid').css('background-color', 'rgb(255, 255, 255)');
         $('#game_grid').empty();
-        console.log('empty didnt work')
         $('#game_grid').attr('data-disabled', 'true');
         $('#clicks').text(`Clicks: 0`);
         difficultyChosen = 0;
