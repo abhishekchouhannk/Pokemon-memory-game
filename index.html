@@ -126,6 +126,11 @@
         clearInterval(timerInterval); // Stop the timer interval
         $('#timer').text('Timer: 0'); // Reset the timer value to 0
         // Reset all HUD components and divs
+        $('#clicks').text(`Clicks: 0`);
+        $('#difficulty').text(`Difficulty: Choose`);
+        $('#totalPairs').text(`Total Pairs: 0`);
+        $('#pairsLeft').text(`Pairs Left: 0`);
+        $('#pairsMatched').text(`Pairs Matched: 0`);
         $('#game_grid').css('background-color', 'rgb(255, 255, 255)');
         $('#game_grid').empty();
         $('#game_grid').attr('data-disabled', 'true');
