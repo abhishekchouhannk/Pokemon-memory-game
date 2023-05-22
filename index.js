@@ -2,7 +2,6 @@ async function setupGrid(numberOfCards) {
   return new Promise((resolve, reject) => {
     constructCardData(numberOfCards)
       .then((cardData) => {
-        console.log(cardData);
         var gameGrid = $("#game_grid");
 
         for (var i = 0; i < cardData.length; i++) {
@@ -21,7 +20,6 @@ async function setupGrid(numberOfCards) {
           card.append(backFace);
           gameGrid.append(card);
         }
-        console.log("actual finished");
 
         // Resolve the promise to indicate setupGrid is complete
         resolve();
@@ -81,10 +79,74 @@ const constructCardData = async (numberOfCards) => {
   return cardData;
 };
 
+async function setDifficulty(difficulty) {
+  /*
+  difficulty chart:
+  easy : 16 cards (4 * 4)
+  medium : 30 cards (6 * 5)
+  hard : 54 cards (9 * 6) 
+  */
+  if (difficulty == 16) {
+    await setupGrid(difficulty);
+    // Update grid styles
+    $('#game_grid').css({
+      width: '600px',
+      height: '600px'
+    });
 
-const setup = async () => {
-  await setupGrid(40);
+    // Update card styles
+    $('.card').css({
+    width: '25%',
+    height: '150px'
+    });
+      // Update img styles
+    $('img').css({
+      height: '150px'
+    });
+  } else if (difficulty == 30) {
+    await setupGrid(difficulty);
+    // Update grid styles
+    $('#game_grid').css({
+      width: '720px',
+      height: '600px'
+    });
 
+    // Update card styles
+    $('.card').css({
+    width: '16.66%',
+    height: '120px'
+    });
+      // Update img styles
+    $('img').css({
+      height: '120px'
+    });
+  } else if (difficulty == 54) {
+    await setupGrid(difficulty);
+    // Update grid styles
+    $('#game_grid').css({
+      width: '900px',
+      height: '600px'
+    });
+
+    // Update card styles
+    $('.card').css({
+    width: '11.11%',
+    height: '100px'
+    });
+      // Update img styles
+    $('img').css({
+      height: '100px'
+    });
+  }
+}
+
+var difficultyChosen = 0;
+
+const setup = async (difficulty) => {
+
+  await setDifficulty(difficulty);
+
+  var clicks = 0;
   let firstCard = undefined;
   let secondCard = undefined;
   let failedAttempts = 0;
@@ -93,7 +155,11 @@ const setup = async () => {
   let flippedCards = [];
 
   $(".card").on("click", function () {
-    if (!isClickable) return; // Prevent clicking during animations
+    if (!isClickable || $('#game_grid').attr('data-disabled') === 'true') return; // Prevent clicking during animations
+
+    clicks++;
+    $('#clicks').text(`Clicks: ${clicks}`);
+    console.log("clicks: " + clicks);
   
     $(this).toggleClass("flip");
   
@@ -105,19 +171,19 @@ const setup = async () => {
       // console.log(firstCard, secondCard);
   
       if (firstCard.src === secondCard.src && firstCard.id != secondCard.id) {
-        console.log("match");
+        // console.log("match");
         $(`#${firstCard.id}`).parent().off("click");
         $(`#${secondCard.id}`).parent().off("click");
   
         flippedCards.push(firstCard.id, secondCard.id);
-        console.log(flippedCards)
+        // console.log(flippedCards)
   
         firstCard = undefined;
         secondCard = undefined;
         isClickable = true; // Re-enable clicking
         failedAttempts = 0;
       } else {
-        console.log("no match");
+        // console.log("no match");
         setTimeout(() => {
           if (!flippedCards.includes(firstCard.id)) {
             $(`#${firstCard.id}`).parent().toggleClass("flip");
@@ -131,7 +197,7 @@ const setup = async () => {
           isClickable = true; // Re-enable clicking
   
           failedAttempts++;
-          if (failedAttempts >= 5) {
+          if (failedAttempts >= 4) {
             isClickable = false;
             // Flip all non-matched cards for a peek
             setTimeout(() => {
@@ -157,6 +223,8 @@ const setup = async () => {
       }
     }
   });
+
+
 };
 
-$(document).ready(setup);
+// $(document).ready(setup);
