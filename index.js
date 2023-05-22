@@ -83,7 +83,7 @@ const constructCardData = async (numberOfCards) => {
 
 
 const setup = async () => {
-  await setupGrid(40);
+  await setupGrid(16);
 
   let firstCard = undefined;
   let secondCard = undefined;
