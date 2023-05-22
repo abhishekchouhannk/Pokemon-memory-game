@@ -79,13 +79,33 @@ const constructCardData = async (numberOfCards) => {
   return cardData;
 };
 
-const setup = async () => {
-  // Reset all HUD components and divs
-  $('#game_grid').css('background-color', 'rgb(255, 255, 255)');
-  $('#game_grid').empty();
-  $('#game_grid').attr('data-disabled', 'true');
-  $('#clicks').text(`Clicks: 0`);
-  await setupGrid(16);
+var difficultyChosen = 0;
+
+const setup = async (difficulty) => {
+  /*
+  difficulty chart:
+  easy : 16 cards (4 * 4)
+  medium : 30 cards (6 * 5)
+  hard : 54 cards (9 * 6) 
+  */
+  if (difficulty == 16) {
+    await setupGrid(difficulty);
+    // Update grid styles
+    $('#game_grid').css({
+      width: '600px',
+      height: '600px'
+    });
+
+    // Update card styles
+    $('.card').css({
+    width: '25%',
+    height: '150px'
+    });
+      // Update img styles
+    $('img').css({
+      height: '150px'
+    });
+  }
 
   var clicks = 0;
   let firstCard = undefined;
@@ -168,4 +188,4 @@ const setup = async () => {
 
 };
 
-$(document).ready(setup);
+// $(document).ready(setup);
