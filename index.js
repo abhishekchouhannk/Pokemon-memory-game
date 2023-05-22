@@ -151,6 +151,16 @@ const setup = async (difficulty) => {
   let secondCard = undefined;
   let failedAttempts = 0;
   let isClickable = true; // Flag to prevent clicking during animations
+  let totalPairs = 0;
+  if (difficulty == 16) {
+    totalPairs = 8;
+  } else if (difficulty == 30) {
+    totalPairs = 15;
+  } else if (difficulty == 54) {
+    totalPairs = 27;
+  }
+  $('#totalPairs').text(`Total Pairs: ${totalPairs}`);
+   
 
   let flippedCards = [];
 

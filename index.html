@@ -28,9 +28,10 @@
 
 <body>
   <nav class="navbar navbar-light bg-danger">
-    <span class="navbar-brand mb-0 h1" id="difficulty">Difficulty: Hard</span>
-    <span class="navbar-brand mb-0 h1" id="totalPairs">Total Pairs: 20</span>
-    <span class="navbar-brand mb-0 h1" id="score">Score: 400</span>
+    <span class="navbar-brand mb-0 h1" id="difficulty">Difficulty: Choose</span>
+    <span class="navbar-brand mb-0 h1" id="totalPairs">Total Pairs: 0</span>
+    <span class="navbar-brand mb-0 h1" id="pairsLeft">Pairs Left: 0</span>
+    <span class="navbar-brand mb-0 h1" id="pairsMatched">Pairs Matched: 0</span>
     <span class="navbar-brand mb-0 h1" id="clicks">Clicks: 0</span>
     <span class="navbar-brand mb-0 h1" id="timer">Timer: 0</span>
   </nav>
@@ -66,9 +67,12 @@
         // Reset all HUD components and divs
         $('#game_grid').css('background-color', 'rgb(255, 255, 255)');
         $('#game_grid').empty();
-        console.log('empty didnt work')
         $('#game_grid').attr('data-disabled', 'true');
         $('#clicks').text(`Clicks: 0`);
+        $('#difficulty').text(`Difficulty: Choose`);
+        $('#totalPairs').text(`Total Pairs: 0`);
+        $('#pairsLeft').text(`Pairs Left: 0`);
+        $('#pairsMatched').text(`Pairs Matched: 0`);
         difficultyChosen = 0;
         // setup();
       }
@@ -79,18 +83,21 @@
       $('#easy').click(function() {
         reset()
         difficultyChosen = 1;
+        $('#difficulty').text(`Difficulty: Easy`);
         setup(difficulty.easy);
       });
 
       $('#medium').click(function() {
         reset()
         difficultyChosen = 1;
+        $('#difficulty').text(`Difficulty: Medium`);
         setup(difficulty.medium);
       });
 
       $('#hard').click(function() {
         reset()
         difficultyChosen = 1;
+        $('#difficulty').text(`Difficulty: Hard`);
         setup(difficulty.hard);
       });
 
